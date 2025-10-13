@@ -4,6 +4,7 @@ plugins {
 	id("org.springframework.boot") version "3.5.6"
 	id("io.spring.dependency-management") version "1.1.7"
     id("io.freefair.lombok") version "8.6"
+    id("org.sonarqube") version "6.2.0.5505"
     kotlin("kapt") version "1.9.25"
 }
 
@@ -24,6 +25,13 @@ configurations {
 
 repositories {
 	mavenCentral()
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "liadiann_java-project-99")
+        property("sonar.organization", "liadiann")
+    }
 }
 
 dependencies {
