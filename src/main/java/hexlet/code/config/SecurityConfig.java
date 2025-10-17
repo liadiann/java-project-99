@@ -36,9 +36,11 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET, "/").permitAll().requestMatchers("/index.html").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/").permitAll().requestMatchers("/index.html").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/welcome").permitAll()
+                        .requestMatchers("/assets/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
