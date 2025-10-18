@@ -134,7 +134,7 @@ public class UsersControllerTest {
     }
 
     @Test
-    public void testFailedValidation() throws Exception{
+    public void testFailedValidation() throws Exception {
         var createData = Instancio.of(modelGenerator.getUserModel()).create();
         createData.setEmail("aaa");
         var requestCreate = post("/api/users")
