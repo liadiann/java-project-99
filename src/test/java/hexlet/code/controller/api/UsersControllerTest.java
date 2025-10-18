@@ -93,6 +93,18 @@ public class UsersControllerTest {
     }
 
     @Test
+    public void testResourceNotFound() throws Exception {
+        mockMvc.perform(get("/api/users/15").with(token))
+                .andExpect(status().isNotFound());
+        var data = new HashMap<>();
+        data.put("firstName", "Luca");
+        mockMvc.perform(put("/api/users/15").with(token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsString(data)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     public void testCreate() throws Exception {
         var data = Instancio.of(modelGenerator.getUserModel()).create();
         var request = post("/api/users")
@@ -122,11 +134,53 @@ public class UsersControllerTest {
     }
 
     @Test
+    public void testFailedValidation() throws Exception{
+        var createData = Instancio.of(modelGenerator.getUserModel()).create();
+        createData.setEmail("aaa");
+        var requestCreate = post("/api/users")
+                .with(token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(createData));
+        mockMvc.perform(requestCreate)
+                .andExpect(status().isBadRequest());
+        var updateData = new HashMap<>();
+        updateData.put("email", "aaa");
+        var requestUpdate = put("/api/users/" + user.getId())
+                .with(token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(updateData));
+        mockMvc.perform(requestUpdate)
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void testDestroy() throws Exception {
         mockMvc.perform(delete("/api/users/" + user.getId()).with(token))
                 .andExpect(status().isNoContent())
                 .andExpect(content().string(""));
         var deletedUser = userRepository.findById(user.getId()).orElse(null);
         assertThat(deletedUser).isNull();
+    }
+
+    @Test
+    public void testNotAuth() throws Exception {
+        mockMvc.perform(get("/api/users")).andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/api/users/" + user.getId()))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(delete("/api/users/" + user.getId()))
+                .andExpect(status().isUnauthorized());
+        var createData = Instancio.of(modelGenerator.getUserModel()).create();
+        var requestCreate = post("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(createData));
+        mockMvc.perform(requestCreate)
+                .andExpect(status().isUnauthorized());
+        var updateData = new HashMap<>();
+        updateData.put("email", "aaa");
+        var requestUpdate = put("/api/users/" + user.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(updateData));
+        mockMvc.perform(requestUpdate)
+                .andExpect(status().isUnauthorized());
     }
 }
