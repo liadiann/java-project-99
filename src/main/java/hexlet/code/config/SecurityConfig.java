@@ -40,6 +40,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/welcome").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/task_statuses").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/task_statuses/*").permitAll()
                         .requestMatchers("/assets/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session ->
