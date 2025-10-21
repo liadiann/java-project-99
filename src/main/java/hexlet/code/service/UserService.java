@@ -5,6 +5,7 @@ import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ import java.util.List;
 
 @Service
 public class UserService {
+    @Autowired
+    private TaskRepository taskRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -44,6 +47,12 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id + " not found"));
+        var hasTasks = taskRepository.existsByAssignee(user);
+        if (hasTasks) {
+            throw new IllegalStateException("User has task");
+        }
         userRepository.deleteById(id);
     }
 }
