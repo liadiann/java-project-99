@@ -1,22 +1,19 @@
 package hexlet.code.component;
 
-import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.model.TaskStatus;
+import hexlet.code.model.User;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.service.TaskStatusService;
-import hexlet.code.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DataInitializer implements ApplicationRunner {
     @Autowired
-    private UserService userService;
-    @Autowired
-    private TaskStatusService taskStatusService;
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private TaskStatusRepository repository;
     @Autowired
@@ -25,10 +22,12 @@ public class DataInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         var email = "hexlet@example.com";
         var password = "qwerty";
-        var userDto = new UserCreateDTO();
-        userDto.setEmail(email);
-        userDto.setPassword(password);
-        userService.createUser(userDto);
+        if (userRepository.findByEmail(email).isEmpty()) {
+            var user = new User();
+            user.setEmail(email);
+            user.setPasswordDigest(passwordEncoder.encode(password));
+            userRepository.save(user);
+        }
 
         String[][] statuses = {
                 {"Draft", "draft"},
