@@ -1,6 +1,5 @@
 package hexlet.code.component;
 
-import hexlet.code.dto.TaskStatusCreateDTO;
 import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
