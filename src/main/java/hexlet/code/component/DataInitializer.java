@@ -20,6 +20,7 @@ public class DataInitializer implements ApplicationRunner {
     private UserRepository userRepository;
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        userRepository.deleteAll();
         repository.deleteAll();
         var email = "hexlet@example.com";
         var password = "qwerty";
