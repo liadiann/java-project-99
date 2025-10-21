@@ -33,9 +33,6 @@ public class TaskStatusService {
     }
 
     public TaskStatusDTO createStatus(TaskStatusCreateDTO data) {
-        if (repository.findBySlug(data.getSlug()).isPresent()) {
-            throw new RuntimeException("Status already exists");
-        }
         var status = mapper.map(data);
         repository.save(status);
         return mapper.map(status);

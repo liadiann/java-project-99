@@ -2,6 +2,7 @@ package hexlet.code.component;
 
 import hexlet.code.dto.TaskStatusCreateDTO;
 import hexlet.code.dto.UserCreateDTO;
+import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.service.TaskStatusService;
@@ -30,17 +31,24 @@ public class DataInitializer implements ApplicationRunner {
         userDto.setPassword(password);
         userService.createUser(userDto);
 
-        taskStatusService.createStatus(createTaskStatusCreateDTO("Draft", "draft"));
-        taskStatusService.createStatus(createTaskStatusCreateDTO("ToReview", "to_review"));
-        taskStatusService.createStatus(createTaskStatusCreateDTO("ToBeFixed", "to_be_fixed"));
-        taskStatusService.createStatus(createTaskStatusCreateDTO("ToPublish", " to_publish"));
-        taskStatusService.createStatus(createTaskStatusCreateDTO("Published", "published"));
-    }
+        String[][] statuses = {
+                {"Draft", "draft"},
+                {"ToReview", "to_review"},
+                {"ToBeFixed", "to_be_fixed"},
+                {"ToPublish", " to_publish"},
+                {"Published", "published"}
+        };
 
-    public TaskStatusCreateDTO createTaskStatusCreateDTO(String name, String slug) {
-        var status = new TaskStatusCreateDTO();
-        status.setName(name);
-        status.setSlug(slug);
-        return status;
+        for (String[] status : statuses) {
+            String name = status[0];
+            String slug = status[1];
+
+            if (repository.findBySlug(slug).isEmpty()) {
+                var taskStatus = new TaskStatus();
+                taskStatus.setSlug(slug);
+                taskStatus.setName(name);
+                repository.save(taskStatus);
+            }
+        }
     }
 }
