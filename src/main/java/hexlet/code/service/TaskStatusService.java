@@ -49,7 +49,7 @@ public class TaskStatusService {
     public void deleteStatus(Long id) {
         var status = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Status not found"));
-        var hasTasks = taskRepository.existsByTaskStatus(status);
+        var hasTasks = taskRepository.existsByTaskStatusId(id);
         if (hasTasks) {
             throw new IllegalStateException("Status has task");
         }

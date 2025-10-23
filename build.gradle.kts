@@ -54,6 +54,7 @@ dependencies {
     annotationProcessor ("org.mapstruct:mapstruct-processor:1.6.3")
     implementation("org.openapitools:jackson-databind-nullable:0.2.6")
     implementation ("org.postgresql:postgresql:42.7.7")
+    implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
     runtimeOnly("com.h2database:h2")
 }
 

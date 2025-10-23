@@ -49,7 +49,7 @@ public class UserService {
     public void deleteUser(Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id + " not found"));
-        var hasTasks = taskRepository.existsByAssignee(user);
+        var hasTasks = taskRepository.existsByAssigneeId(id);
         if (hasTasks) {
             throw new IllegalStateException("User has task");
         }

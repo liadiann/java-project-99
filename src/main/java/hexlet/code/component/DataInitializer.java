@@ -1,7 +1,9 @@
 package hexlet.code.component;
 
+import hexlet.code.model.Label;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +17,13 @@ public class DataInitializer implements ApplicationRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private TaskStatusRepository repository;
+    private TaskStatusRepository taskStatusRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private LabelRepository labelRepository;
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        userRepository.deleteAll();
-        repository.deleteAll();
         var email = "hexlet@example.com";
         var password = "qwerty";
         if (userRepository.findByEmail(email).isEmpty()) {
@@ -43,11 +45,20 @@ public class DataInitializer implements ApplicationRunner {
             String name = status[0];
             String slug = status[1];
 
-            if (repository.findBySlug(slug).isEmpty()) {
+            if (taskStatusRepository.findBySlug(slug).isEmpty()) {
                 var taskStatus = new TaskStatus();
                 taskStatus.setSlug(slug);
                 taskStatus.setName(name);
-                repository.save(taskStatus);
+                taskStatusRepository.save(taskStatus);
+            }
+        }
+
+        String[] labels = {"feature", "bug"};
+        for (var name : labels) {
+            if (labelRepository.findByName(name).isEmpty()) {
+                var label = new Label();
+                label.setName(name);
+                labelRepository.save(label);
             }
         }
     }
