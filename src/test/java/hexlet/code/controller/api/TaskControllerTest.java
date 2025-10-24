@@ -16,13 +16,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.ModelGenerator;
 import hexlet.code.dto.TaskCreateDTO;
 import hexlet.code.dto.TaskDTO;
+import hexlet.code.dto.TaskParamsDTO;
 import hexlet.code.mapper.TaskMapper;
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
+import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
+import hexlet.code.specification.TaskSpecification;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,9 +61,13 @@ public class TaskControllerTest {
     private ObjectMapper om;
     @Autowired
     private ModelGenerator modelGenerator;
+    @Autowired
+    private TaskSpecification specBuilder;
 
+    private User user;
     private Task task;
     private TaskStatus status;
+    private Label label;
     private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
 
     @BeforeEach
@@ -68,11 +76,11 @@ public class TaskControllerTest {
         userRepository.deleteAll();
         labelRepository.deleteAll();
         taskStatusRepository.deleteAll();
-        var user = Instancio.of(modelGenerator.getUserModel()).create();
+        user = Instancio.of(modelGenerator.getUserModel()).create();
         userRepository.save(user);
         status = Instancio.of(modelGenerator.getTaskStatusModel()).create();
         taskStatusRepository.save(status);
-        var label = Instancio.of(modelGenerator.getLabelModel()).create();
+        label = Instancio.of(modelGenerator.getLabelModel()).create();
         labelRepository.save(label);
         var labels = Set.of(label);
         task = Instancio.of(modelGenerator.getTaskModel()).create();
@@ -104,6 +112,29 @@ public class TaskControllerTest {
     }
 
     @Test
+    public void testIndexWithParams() throws Exception {
+        var params = new TaskParamsDTO();
+        params.setAssigneeId(user.getId());
+        params.setStatus(status.getSlug());
+        params.setLabelId(label.getId());
+        params.setTitleCont(task.getName() + "!!!");
+        var response = mockMvc.perform(get("/api/tasks?assigneeId=" + params.getAssigneeId()
+                + "&status=" + params.getStatus() + "&labelId=" + params.getLabelId()
+                + "&titleCont=" + params.getTitleCont()).with(token))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
+        var body = response.getContentAsString();
+        assertThatJson(body).isArray();
+        var dto = om.readValue(body, new TypeReference<List<TaskDTO>>() {
+        });
+        var actual = dto.stream().map(taskMapper::map).toList();
+        var spec = specBuilder.build(params);
+        var expected = taskRepository.findAll(spec);
+        assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+    }
+
+    @Test
     public void testShow() throws Exception {
         var response = mockMvc.perform(get("/api/tasks/" + task.getId()).with(token))
                 .andExpect(status().isOk())
@@ -124,6 +155,7 @@ public class TaskControllerTest {
         var data = new TaskCreateDTO();
         data.setTitle("Work");
         data.setStatus(status.getSlug());
+        data.setLabelIds(Set.of(label.getId()));
         var request = post("/api/tasks")
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -134,6 +166,7 @@ public class TaskControllerTest {
         assertNotNull(createdTask);
         assertThat(createdTask.getName()).isEqualTo(data.getTitle());
         assertThat(createdTask.getTaskStatus().getSlug()).isEqualTo(data.getStatus());
+        assertThat(createdTask.getLabels().size()).isEqualTo(1);
     }
 
     @Test

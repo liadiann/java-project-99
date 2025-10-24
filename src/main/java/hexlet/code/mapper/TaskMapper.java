@@ -15,6 +15,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
@@ -37,25 +38,25 @@ public abstract class TaskMapper {
     @Mapping(target = "content", source = "description")
     @Mapping(target = "status", source = "taskStatus.slug")
     @Mapping(target = "assigneeId", source = "assignee.id")
-    @Mapping(target = "labelIds", source = "labels")
+    @Mapping(target = "labelIds", source = "labels", qualifiedByName = "toIds")
     public abstract TaskDTO map(Task task);
     @Mapping(target = "name", source = "title")
     @Mapping(target = "assignee", source = "assigneeId")
     @Mapping(target = "description", source = "content")
     @Mapping(target = "taskStatus", source = "status")
-    @Mapping(target = "labels", source = "labelIds")
+    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "toEntities")
     public abstract Task map(TaskCreateDTO dto);
     @Mapping(target = "name", source = "title")
     @Mapping(target = "assignee", source = "assigneeId")
     @Mapping(target = "description", source = "content")
     @Mapping(target = "taskStatus", source = "status")
-    @Mapping(target = "labels", source = "labelIds")
+    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "toEntities")
     public abstract Task map(TaskDTO dto);
     @Mapping(target = "name", source = "title")
     @Mapping(target = "assignee", source = "assigneeId")
     @Mapping(target = "description", source = "content")
     @Mapping(target = "taskStatus", source = "status")
-    @Mapping(target = "labels", source = "labelIds")
+    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "toEntities")
     public abstract void update(TaskUpdateDTO dto, @MappingTarget Task task);
 
     public TaskStatus toEntity(String slug) {
@@ -63,10 +64,12 @@ public abstract class TaskMapper {
                 .orElseThrow(() -> new ResourceNotFoundException("Status not found"));
     }
 
+    @Named("toEntities")
     public Set<Label> toEntities(Set<Long> ids) {
-        return labelRepository.findByIdIn(ids);
+        return ids == null ? new HashSet<>() : new HashSet<>(labelRepository.findByIdIn(ids));
     }
 
+    @Named("toIds")
     public Set<Long> toIds(Set<Label> labels) {
         return labels == null ? new HashSet<>() : labels.stream().map(Label::getId).collect(Collectors.toSet());
     }

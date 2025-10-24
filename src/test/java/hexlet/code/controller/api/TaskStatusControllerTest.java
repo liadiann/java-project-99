@@ -128,11 +128,11 @@ public class TaskStatusControllerTest {
 
     @Test
     public void testResourceNotFound() throws Exception {
-        mockMvc.perform(get("/api/task_statuses/15").with(token))
+        mockMvc.perform(get("/api/task_statuses/150").with(token))
                 .andExpect(status().isNotFound());
         var data = new HashMap<>();
         data.put("name", "new");
-        mockMvc.perform(put("/api/task_statuses/15")
+        mockMvc.perform(put("/api/task_statuses/150")
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data)))
