@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.ModelGenerator;
-import hexlet.code.dto.LabelDTO;
+import hexlet.code.dto.label.LabelDTO;
 import hexlet.code.mapper.LabelMapper;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
@@ -88,7 +88,7 @@ public class LabelControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        var data = Instancio.of(modelGenerator.getTaskStatusModel()).create();
+        var data = Instancio.of(modelGenerator.getLabelModel()).create();
         data.setName("Feature");
         var request = post("/api/labels")
                 .with(token)

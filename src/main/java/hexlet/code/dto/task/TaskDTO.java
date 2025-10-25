@@ -1,4 +1,4 @@
-package hexlet.code.dto;
+package hexlet.code.dto.task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,5 +20,5 @@ public class TaskDTO {
     private String status;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate createdAt;
-    private Set<Long> labelIds;
+    private Set<Long> taskLabelIds;
 }

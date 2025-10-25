@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.ModelGenerator;
-import hexlet.code.dto.TaskCreateDTO;
-import hexlet.code.dto.TaskDTO;
-import hexlet.code.dto.TaskParamsDTO;
+import hexlet.code.dto.task.TaskCreateDTO;
+import hexlet.code.dto.task.TaskDTO;
+import hexlet.code.dto.task.TaskParamsDTO;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
@@ -155,7 +155,7 @@ public class TaskControllerTest {
         var data = new TaskCreateDTO();
         data.setTitle("Work");
         data.setStatus(status.getSlug());
-        data.setLabelIds(Set.of(label.getId()));
+        data.setTaskLabelIds(Set.of(label.getId()));
         var request = post("/api/tasks")
                 .with(token)
                 .contentType(MediaType.APPLICATION_JSON)

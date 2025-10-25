@@ -1,8 +1,9 @@
 package hexlet.code.service;
 
-import hexlet.code.dto.LabelCreateDTO;
-import hexlet.code.dto.LabelDTO;
-import hexlet.code.dto.LabelUpdateDTO;
+import hexlet.code.dto.label.LabelCreateDTO;
+import hexlet.code.dto.label.LabelDTO;
+import hexlet.code.dto.label.LabelUpdateDTO;
+import hexlet.code.exception.ResourceExistsException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.LabelMapper;
 import hexlet.code.repository.LabelRepository;
@@ -34,6 +35,9 @@ public class LabelService {
 
     public LabelDTO createLabel(LabelCreateDTO data) {
         var label = labelMapper.map(data);
+        if (labelRepository.findByName(label.getName()).isPresent()) {
+            throw new ResourceExistsException("Label already exists");
+        }
         labelRepository.save(label);
         return labelMapper.map(label);
     }

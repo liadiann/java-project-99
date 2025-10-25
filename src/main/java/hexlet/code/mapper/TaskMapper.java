@@ -1,8 +1,8 @@
 package hexlet.code.mapper;
 
-import hexlet.code.dto.TaskCreateDTO;
-import hexlet.code.dto.TaskDTO;
-import hexlet.code.dto.TaskUpdateDTO;
+import hexlet.code.dto.task.TaskCreateDTO;
+import hexlet.code.dto.task.TaskDTO;
+import hexlet.code.dto.task.TaskUpdateDTO;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
@@ -38,25 +38,25 @@ public abstract class TaskMapper {
     @Mapping(target = "content", source = "description")
     @Mapping(target = "status", source = "taskStatus.slug")
     @Mapping(target = "assigneeId", source = "assignee.id")
-    @Mapping(target = "labelIds", source = "labels", qualifiedByName = "toIds")
+    @Mapping(target = "taskLabelIds", source = "labels", qualifiedByName = "toIds")
     public abstract TaskDTO map(Task task);
     @Mapping(target = "name", source = "title")
     @Mapping(target = "assignee", source = "assigneeId")
     @Mapping(target = "description", source = "content")
     @Mapping(target = "taskStatus", source = "status")
-    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "toEntities")
+    @Mapping(target = "labels", source = "taskLabelIds", qualifiedByName = "toEntities")
     public abstract Task map(TaskCreateDTO dto);
     @Mapping(target = "name", source = "title")
     @Mapping(target = "assignee", source = "assigneeId")
     @Mapping(target = "description", source = "content")
     @Mapping(target = "taskStatus", source = "status")
-    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "toEntities")
+    @Mapping(target = "labels", source = "taskLabelIds", qualifiedByName = "toEntities")
     public abstract Task map(TaskDTO dto);
     @Mapping(target = "name", source = "title")
     @Mapping(target = "assignee", source = "assigneeId")
     @Mapping(target = "description", source = "content")
     @Mapping(target = "taskStatus", source = "status")
-    @Mapping(target = "labels", source = "labelIds", qualifiedByName = "toEntities")
+    @Mapping(target = "labels", source = "taskLabelIds", qualifiedByName = "toEntities")
     public abstract void update(TaskUpdateDTO dto, @MappingTarget Task task);
 
     public TaskStatus toEntity(String slug) {
