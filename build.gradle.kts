@@ -6,6 +6,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.7"
     id("io.freefair.lombok") version "8.6"
     id("org.sonarqube") version "6.2.0.5505"
+    id("io.sentry.jvm.gradle") version "5.12.1"
     kotlin("kapt") version "1.9.25"
 }
 
@@ -56,6 +57,21 @@ dependencies {
     implementation ("org.postgresql:postgresql:42.7.7")
     implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
     runtimeOnly("com.h2database:h2")
+}
+
+sentry {
+    // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+    // This enables source context, allowing you to see your source
+    // code as part of your stack traces in Sentry.
+    includeSourceContext = true
+
+    org = "liadiann"
+    projectName = "java-spring-boot"
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
+}
+
+tasks.sentryBundleSourcesJava {
+    enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
 }
 
 tasks.withType<Test> {

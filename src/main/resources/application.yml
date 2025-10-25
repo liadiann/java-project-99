@@ -14,3 +14,6 @@ logging:
 rsa:
   private-key: classpath:certs/private.pem
   public-key: classpath:certs/public.pem
+sentry:
+  dsn: https://179e99fcb49dad311dd4fde2e8468c36@o4510250356506624.ingest.de.sentry.io/4510250379182160
+  send-default-pii: true
