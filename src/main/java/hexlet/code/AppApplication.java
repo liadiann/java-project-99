@@ -11,12 +11,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 public class AppApplication {
     public static void main(String[] args) {
-
-        try {
-            throw new Exception("This is a test.");
-        } catch (Exception e) {
-            Sentry.captureException(e);
-        }
         SpringApplication.run(AppApplication.class, args);
     }
     @Bean
