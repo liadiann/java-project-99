@@ -58,7 +58,7 @@ public class TaskStatusControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        var response = mockMvc.perform(get("/api/task_statuses"))
+        var response = mockMvc.perform(get("/api/task_statuses").with(token))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -75,7 +75,7 @@ public class TaskStatusControllerTest {
 
     @Test
     public void testShow() throws Exception {
-        var response = mockMvc.perform(get("/api/task_statuses/" + status.getId()))
+        var response = mockMvc.perform(get("/api/task_statuses/" + status.getId()).with(token))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();

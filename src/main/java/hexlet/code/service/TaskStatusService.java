@@ -6,21 +6,17 @@ import hexlet.code.dto.taskStatus.TaskStatusUpdateDTO;
 import hexlet.code.exception.ResourceExistsException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
-import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class TaskStatusService {
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private TaskStatusRepository repository;
-    @Autowired
-    private TaskStatusMapper mapper;
+    private final TaskStatusRepository repository;
+    private final TaskStatusMapper mapper;
 
     public List<TaskStatusDTO> getAll() {
         var statuses = repository.findAll();
@@ -51,12 +47,6 @@ public class TaskStatusService {
     }
 
     public void deleteStatus(Long id) {
-        var status = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Status not found"));
-        var hasTasks = taskRepository.existsByTaskStatusId(id);
-        if (hasTasks) {
-            throw new IllegalStateException("Status has task");
-        }
         repository.deleteById(id);
     }
 }
