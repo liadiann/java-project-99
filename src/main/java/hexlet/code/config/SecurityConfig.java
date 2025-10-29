@@ -1,6 +1,6 @@
 package hexlet.code.config;
 
-import hexlet.code.service.CustomUserDetailsService;
+import hexlet.code.service.implement.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

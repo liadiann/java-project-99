@@ -1,4 +1,4 @@
-package hexlet.code.service;
+package hexlet.code.service.implement;
 
 import hexlet.code.repository.UserRepository;
 import lombok.AllArgsConstructor;
